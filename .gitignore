@@ -1,0 +1,34 @@
+# Environment and secrets
+.env
+*.pem
+*.key
+wallet/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+dist/
+build/
+
+# Claude Code
+.claude/
+CLAUDE.md
+
+# Local scratch
+_local/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
