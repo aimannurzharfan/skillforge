@@ -11,7 +11,9 @@ deterministically.
 from __future__ import annotations
 
 import json
+from concurrent.futures import ThreadPoolExecutor
 
+from .. import guardrails
 from ..domain import Catalog, CompetencyResult, ReadinessResult, load_catalog
 from ..foundry_client import ModelUnavailable, chat_json, is_configured
 from ..knowledge.interface import KnowledgeBackend, Passage
@@ -19,6 +21,10 @@ from ..schemas import SchemaError, validate_plan
 
 MAX_PLANS = 5
 PASSAGES_PER_GAP = 3
+# Each gap's plan is an independent retrieve-then-write, so they run concurrently
+# and the step tracks the slowest plan, not the sum. Cap the fan-out to stay
+# inside endpoint rate limits.
+_MAX_PLAN_WORKERS = 5
 
 _SYSTEM = (
     "You are an enterprise learning designer building a focused study plan to close one skill gap. "
@@ -53,25 +59,35 @@ def build_plans(
 ) -> tuple[list[dict], str]:
     """Return (plans, mode). mode is 'model' if the model wrote any plan."""
     catalog = catalog or load_catalog()
-    used_model = False
-    plans: list[dict] = []
+    gaps = readiness.gaps[:MAX_PLANS]
 
-    for gap in readiness.gaps[:MAX_PLANS]:
+    def build_one(gap: CompetencyResult) -> tuple[dict, str]:
         passages = _retrieve_for(gap, backend, catalog)
         plan_body, mode = _plan_for_gap(gap, passages)
-        used_model = used_model or mode == "model"
-        plans.append(
-            {
-                "competency_id": gap.competency_id,
-                "name": gap.name,
-                "attained_level": gap.attained_level,
-                "target_level": gap.target_level,
-                "summary": plan_body["summary"],
-                "modules": plan_body["modules"],
-                "citations": [p.to_dict() for p in passages],
-            }
+        # Guardrail: keep every citation tied to a passage actually retrieved, so
+        # nothing the model might surface can slip in as an invented source.
+        citations = guardrails.ground_citations(
+            [p.to_dict() for p in passages], [p.doc_id for p in passages]
         )
+        plan = {
+            "competency_id": gap.competency_id,
+            "name": gap.name,
+            "attained_level": gap.attained_level,
+            "target_level": gap.target_level,
+            "summary": plan_body["summary"],
+            "modules": plan_body["modules"],
+            "citations": citations,
+        }
+        return plan, mode
 
+    if gaps:
+        with ThreadPoolExecutor(max_workers=min(_MAX_PLAN_WORKERS, len(gaps))) as pool:
+            built = list(pool.map(build_one, gaps))
+    else:
+        built = []
+
+    plans = [plan for plan, _ in built]
+    used_model = any(mode == "model" for _, mode in built)
     mode = "model" if used_model else ("deterministic" if plans else "none")
     return plans, mode
 

@@ -28,13 +28,40 @@ Five agents run in a pipeline that the orchestrator drives and logs step by step
 
 The model only ever produces language: questions, evaluations, narratives, and
 plan text. Every call runs in JSON mode at temperature 0 against a tight schema
-with a one-shot example, and the output is validated. If a call fails or the
-model is not configured, the agent falls back to deterministic text so the whole
-pipeline still completes offline.
+with few-shot examples, carries a per-call timeout with one retry, and the output
+is validated. If a call fails or the model is not configured, the agent falls
+back to deterministic text so the whole pipeline still completes offline.
+
+The per-answer evaluations and the per-gap learning plans are independent model
+calls, so each set runs concurrently in a thread pool: the step tracks the
+slowest single call rather than the sum. The orchestrator measures the real
+end-to-end time from assessment submit to readiness-and-plan and surfaces it in
+the UI (for example, "assessed and planned in 7.2s") using the value measured at
+runtime, never a hardcoded number.
 
 The role profiles, level scale, score aggregation, gap computation, and the
 readiness math live in `skillforge/domain.py` and are driven entirely by
 `data/roles.json`.
+
+### Guardrails
+
+The safety checks live in one place, `skillforge/guardrails.py`, and the
+orchestrator logs `guardrails passed: N/N` per run and returns the tally to the
+UI. The gates:
+
+- **Schema validation of every model output.** Each evaluation, narrative, and
+  plan is validated for shape, level, and score bounds before it is trusted; a
+  malformed or injected payload is rejected.
+- **The non-answer rule.** A missing, empty, or unrecognised assessed level is a
+  non-answer and scores `none`. It is never defaulted up to a working or
+  proficient level, so an unanswered competency cannot inflate readiness.
+- **Citations grounded in retrieval.** Every citation is tied to a passage that
+  was actually retrieved; any source the model might surface on its own is
+  dropped.
+- **Taxonomy enforcement.** Only roles and competencies defined in
+  `data/roles.json` are accepted; anything else is rejected.
+- **Deterministic fallback.** When a model call fails or returns invalid JSON,
+  the agent falls back to deterministic text so the pipeline always completes.
 
 ### Roles
 

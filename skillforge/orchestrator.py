@@ -15,6 +15,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 
+from . import guardrails
 from .agents import (
     assessor,
     gap_analyzer,
@@ -95,13 +96,16 @@ class Orchestrator:
 
     # Phase 2: evaluate answers and produce the full readiness result.
     def complete_assessment(self, role_id: str, answers: list[dict]) -> dict:
+        run_started = time.perf_counter()
         role_id = sanitize_identifier(role_id)
         role = self.catalog.role(role_id)
         log = StepLog()
 
         # Assessor: grade each free-text answer. The evaluations are independent
-        # model calls, so they run concurrently; results are reassembled in the
-        # original answer order so aggregation stays deterministic.
+        # model calls, so they run concurrently in a thread pool; results are
+        # reassembled in the original answer order so aggregation stays
+        # deterministic. With concurrency the step tracks the slowest single call,
+        # not the sum, so each call is also timed and logged on its own.
         started = time.perf_counter()
         gradable = []
         for ans in answers:
@@ -113,9 +117,14 @@ class Orchestrator:
 
         def grade(item):
             cid, competency, question, answer_text = item
-            return cid, competency, question, assessor.evaluate_answer(
-                role, competency, question, answer_text
+            call_started = time.perf_counter()
+            evaluation, mode = assessor.evaluate_answer(role, competency, question, answer_text)
+            call_ms = round((time.perf_counter() - call_started) * 1000)
+            logger.info(
+                "assessor eval competency=%s level=%s score=%s mode=%s (%dms)",
+                cid, evaluation["level"], evaluation["score"], mode, call_ms,
             )
+            return cid, competency, question, (evaluation, mode)
 
         if gradable:
             with ThreadPoolExecutor(max_workers=min(_MAX_EVAL_WORKERS, len(gradable))) as pool:
@@ -128,20 +137,23 @@ class Orchestrator:
         used_model = False
         for cid, competency, question, (evaluation, mode) in graded:
             used_model = used_model or mode == "model"
-            scored.append({"competency_id": cid, "level": evaluation["level"]})
+            # Guardrail: a missing or unrecognised level is a non-answer; it scores
+            # none and is never defaulted up to a working or proficient level.
+            level = guardrails.enforce_assessed_level(evaluation["level"])
+            scored.append({"competency_id": cid, "level": level})
             evaluations.append(
                 {
                     "competency_id": cid,
                     "competency_name": competency.name,
                     "question": sanitize_user_text(question, max_len=600),
-                    "level": evaluation["level"],
+                    "level": level,
                     "score": evaluation["score"],
                     "rationale": evaluation["rationale"],
                 }
             )
         log.record(
             "assessor", "Evaluate answers", "model" if used_model else "deterministic",
-            f"graded {len(scored)} answers", started,
+            f"graded {len(scored)} answers concurrently", started,
         )
 
         # Code: aggregate to one attained level per competency.
@@ -176,6 +188,15 @@ class Orchestrator:
             f"{len(plans)} plans, {total_citations} citations from {self.backend.name}", started,
         )
 
+        # Guardrails: check the run's invariants and surface the tally.
+        report = guardrails.evaluate_run(
+            role, evaluations, plans, role_known=guardrails.is_known_role(self.catalog, role_id)
+        )
+        logger.info("guardrails passed: %s", report.summary)
+
+        elapsed_seconds = round(time.perf_counter() - run_started, 1)
+        logger.info("assessed and planned in %.1fs", elapsed_seconds)
+
         result = readiness.to_dict()
         result.update(
             {
@@ -185,6 +206,8 @@ class Orchestrator:
                 "learning_plans": plans,
                 "knowledge_backend": self.backend.name,
                 "model_configured": is_configured(),
+                "guardrails": report.to_dict(),
+                "elapsed_seconds": elapsed_seconds,
                 "steps": log.steps,
             }
         )
