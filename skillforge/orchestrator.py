@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import logging
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 
 from .agents import (
@@ -27,6 +28,10 @@ from .knowledge.interface import KnowledgeBackend, get_backend
 from .sanitize import sanitize_identifier, sanitize_user_text
 
 logger = logging.getLogger("skillforge.orchestrator")
+
+# The per-answer evaluations are independent model calls, so they run
+# concurrently. Cap the fan-out to stay well inside endpoint rate limits.
+_MAX_EVAL_WORKERS = 5
 
 
 @dataclass
@@ -94,19 +99,34 @@ class Orchestrator:
         role = self.catalog.role(role_id)
         log = StepLog()
 
-        # Assessor: grade each free-text answer.
+        # Assessor: grade each free-text answer. The evaluations are independent
+        # model calls, so they run concurrently; results are reassembled in the
+        # original answer order so aggregation stays deterministic.
         started = time.perf_counter()
-        scored: list[dict] = []
-        evaluations: list[dict] = []
-        used_model = False
+        gradable = []
         for ans in answers:
             cid = sanitize_identifier(ans.get("competency_id", ""))
             competency = role.competency(cid)
             if competency is None:
                 continue
-            question = ans.get("question", "")
-            answer_text = ans.get("answer", "")
-            evaluation, mode = assessor.evaluate_answer(role, competency, question, answer_text)
+            gradable.append((cid, competency, ans.get("question", ""), ans.get("answer", "")))
+
+        def grade(item):
+            cid, competency, question, answer_text = item
+            return cid, competency, question, assessor.evaluate_answer(
+                role, competency, question, answer_text
+            )
+
+        if gradable:
+            with ThreadPoolExecutor(max_workers=min(_MAX_EVAL_WORKERS, len(gradable))) as pool:
+                graded = list(pool.map(grade, gradable))
+        else:
+            graded = []
+
+        scored: list[dict] = []
+        evaluations: list[dict] = []
+        used_model = False
+        for cid, competency, question, (evaluation, mode) in graded:
             used_model = used_model or mode == "model"
             scored.append({"competency_id": cid, "level": evaluation["level"]})
             evaluations.append(
