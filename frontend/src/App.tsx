@@ -5,6 +5,7 @@ import { groundingLabel } from "./types";
 import RolePicker from "./components/RolePicker";
 import Assessment from "./components/Assessment";
 import Result from "./components/Result";
+import Logo from "./components/Logo";
 
 type Stage = "pick" | "assess" | "result";
 
@@ -117,12 +118,7 @@ export default function App() {
     <div className="mx-auto min-h-screen max-w-5xl px-5 py-6 sm:px-8 sm:py-9">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span
-            aria-hidden="true"
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-ember-500 font-mono text-lg font-semibold text-ink-950"
-          >
-            SF
-          </span>
+          <Logo className="h-9 w-9 shrink-0" />
           <div className="leading-tight">
             <p className="text-[1.05rem] font-bold tracking-tight text-mist-100">SkillForge</p>
             <p className="text-xs text-mist-400">Role readiness, scored and grounded</p>
