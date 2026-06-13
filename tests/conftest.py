@@ -13,6 +13,7 @@ import pytest
 
 import skillforge.config as config
 import skillforge.foundry_client as foundry_client
+import skillforge.knowledge.interface as knowledge_interface
 
 _FOUNDRY_PREFIXES = ("FOUNDRY_",)
 
@@ -42,9 +43,13 @@ def scrub_foundry_env(request, monkeypatch):
     for key in list(__import__("os").environ):
         if key.startswith(_FOUNDRY_PREFIXES):
             monkeypatch.delenv(key, raising=False)
+    # Pin the knowledge backend to the offline corpus so the local .env choice
+    # does not leak into the deterministic tests.
+    monkeypatch.setenv("KNOWLEDGE_BACKEND", "local")
 
     scrubbed = config.load_settings()
     monkeypatch.setattr(config, "SETTINGS", scrubbed)
     monkeypatch.setattr(foundry_client, "SETTINGS", scrubbed)
     monkeypatch.setattr(foundry_client, "_client", None)
+    monkeypatch.setattr(knowledge_interface, "SETTINGS", scrubbed)
     yield
