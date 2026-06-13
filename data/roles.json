@@ -1,0 +1,207 @@
+{
+  "schema_version": "1.0",
+  "source": "data/seed_corpus/09-role-competency-profiles.md",
+  "level_scale": {
+    "none": 0,
+    "aware": 1,
+    "working": 2,
+    "proficient": 3
+  },
+  "readiness_threshold": "working",
+  "readiness_note": "Readiness for a role is the weighted coverage of its required competencies at the working level or above.",
+  "roles": [
+    {
+      "id": "network_engineer",
+      "name": "Network Engineer",
+      "summary": "Designs and troubleshoots enterprise routing and switching, and documents an addressing plan.",
+      "foundational_tools": ["Cisco IOS", "packet capture"],
+      "competencies": [
+        {
+          "id": "ip_addressing_subnetting",
+          "name": "IP addressing and subnetting",
+          "detail": "VLSM, CIDR",
+          "weight": 0.2,
+          "target_level": "proficient"
+        },
+        {
+          "id": "switching_vlans",
+          "name": "Switching and VLANs",
+          "detail": "802.1Q trunking, STP",
+          "weight": 0.15,
+          "target_level": "working"
+        },
+        {
+          "id": "routing",
+          "name": "Routing",
+          "detail": "static and OSPF",
+          "weight": 0.2,
+          "target_level": "proficient"
+        },
+        {
+          "id": "nat_pat",
+          "name": "NAT and PAT",
+          "detail": "address translation",
+          "weight": 0.1,
+          "target_level": "working"
+        },
+        {
+          "id": "acls",
+          "name": "ACLs",
+          "detail": "access control lists",
+          "weight": 0.1,
+          "target_level": "working"
+        },
+        {
+          "id": "network_redundancy",
+          "name": "Network redundancy",
+          "detail": "HSRP",
+          "weight": 0.1,
+          "target_level": "working"
+        },
+        {
+          "id": "traffic_analysis",
+          "name": "Traffic analysis",
+          "detail": "Wireshark",
+          "weight": 0.15,
+          "target_level": "working"
+        }
+      ]
+    },
+    {
+      "id": "network_security_engineer",
+      "name": "Network Security Engineer",
+      "summary": "Builds on the Network Engineer base and reasons about exposure and attack paths, translating risk into firewall and segmentation changes.",
+      "builds_on": "network_engineer",
+      "foundational_tools": ["Cisco IOS", "packet capture", "firewall management"],
+      "competencies": [
+        {
+          "id": "ip_addressing_subnetting",
+          "name": "IP addressing and subnetting",
+          "detail": "VLSM, CIDR",
+          "weight": 0.05,
+          "target_level": "working"
+        },
+        {
+          "id": "switching_vlans",
+          "name": "Switching and VLANs",
+          "detail": "802.1Q trunking, STP",
+          "weight": 0.05,
+          "target_level": "working"
+        },
+        {
+          "id": "routing",
+          "name": "Routing",
+          "detail": "static and OSPF",
+          "weight": 0.05,
+          "target_level": "working"
+        },
+        {
+          "id": "acls",
+          "name": "ACLs",
+          "detail": "access control lists",
+          "weight": 0.1,
+          "target_level": "proficient"
+        },
+        {
+          "id": "traffic_analysis",
+          "name": "Traffic analysis",
+          "detail": "Wireshark",
+          "weight": 0.05,
+          "target_level": "working"
+        },
+        {
+          "id": "firewall_policy_segmentation",
+          "name": "Firewall policy and segmentation",
+          "detail": "policy design and network segmentation",
+          "weight": 0.2,
+          "target_level": "proficient"
+        },
+        {
+          "id": "defense_in_depth",
+          "name": "Defense in depth",
+          "detail": "layered security controls",
+          "weight": 0.1,
+          "target_level": "working"
+        },
+        {
+          "id": "vulnerability_assessment",
+          "name": "Vulnerability assessment",
+          "detail": "vulnerability management",
+          "weight": 0.15,
+          "target_level": "proficient"
+        },
+        {
+          "id": "intrusion_detection_prevention",
+          "name": "Intrusion detection and prevention",
+          "detail": "IDS and IPS",
+          "weight": 0.15,
+          "target_level": "working"
+        },
+        {
+          "id": "secure_remote_access",
+          "name": "Secure remote access",
+          "detail": "VPN, hardened SSH",
+          "weight": 0.05,
+          "target_level": "working"
+        },
+        {
+          "id": "nist_csf",
+          "name": "Security frameworks",
+          "detail": "NIST CSF",
+          "weight": 0.05,
+          "target_level": "aware"
+        }
+      ]
+    },
+    {
+      "id": "soc_analyst",
+      "name": "SOC Analyst",
+      "summary": "Triages alerts, separates true positives from noise, maps activity to ATT&CK, and follows the incident response process. Focused on detecting and responding to attacks rather than building networks.",
+      "foundational_tools": ["SIEM", "IDS", "threat intelligence feeds"],
+      "competencies": [
+        {
+          "id": "log_analysis_siem",
+          "name": "Log analysis and SIEM",
+          "detail": "log analysis and SIEM operation",
+          "weight": 0.25,
+          "target_level": "proficient"
+        },
+        {
+          "id": "intrusion_detection",
+          "name": "Intrusion detection",
+          "detail": "signature and anomaly",
+          "weight": 0.2,
+          "target_level": "proficient"
+        },
+        {
+          "id": "mitre_attack",
+          "name": "MITRE ATT&CK framework",
+          "detail": "mapping activity to ATT&CK",
+          "weight": 0.2,
+          "target_level": "working"
+        },
+        {
+          "id": "incident_response_lifecycle",
+          "name": "Incident response lifecycle",
+          "detail": "incident response process",
+          "weight": 0.2,
+          "target_level": "working"
+        },
+        {
+          "id": "threat_intelligence",
+          "name": "Threat intelligence",
+          "detail": "threat intel analysis",
+          "weight": 0.1,
+          "target_level": "working"
+        },
+        {
+          "id": "scripting_for_triage",
+          "name": "Basic scripting for triage",
+          "detail": "automation for triage",
+          "weight": 0.05,
+          "target_level": "aware"
+        }
+      ]
+    }
+  ]
+}
