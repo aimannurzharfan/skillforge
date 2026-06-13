@@ -2,4 +2,9 @@ flask
 openai
 python-dotenv
 requests
+gunicorn
+# Optional: only needed for the foundry_iq backend when authenticating with
+# Entra ID instead of a search api-key.
+azure-identity
+# Test tooling
 pytest

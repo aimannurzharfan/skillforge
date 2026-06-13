@@ -1,0 +1,23 @@
+[project]
+name = "skillforge"
+version = "0.1.0"
+description = "Enterprise role-readiness agent on Microsoft Foundry"
+requires-python = ">=3.11,<3.14"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: live tests that call the Foundry endpoint (skipped unless --run-slow)",
+]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+extend-exclude = [".venv", "frontend", "web/static"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "W"]
+ignore = ["E501"]
+
+[tool.ty.environment]
+python = ".venv"
