@@ -157,11 +157,20 @@ def aggregate_scores(scored_answers: list[dict]) -> dict[str, int]:
 
     Each scored answer is ``{"competency_id": str, "level": str}``. When a
     competency is probed more than once the attained value is the mean, rounded.
+
+    Guard: a missing, empty, or unrecognised level is treated as a non-answer and
+    scores ``none`` (value 0). It is never defaulted up to the target or to any
+    working/proficient level, so an unanswered competency cannot inflate readiness.
     """
     buckets: dict[str, list[int]] = {}
     for item in scored_answers:
         cid = item["competency_id"]
-        buckets.setdefault(cid, []).append(level_to_value(item["level"]))
+        level = item.get("level")
+        if isinstance(level, str) and level.strip().lower() in LEVEL_VALUE:
+            value = level_to_value(level.strip().lower())
+        else:
+            value = 0
+        buckets.setdefault(cid, []).append(value)
     return {cid: round(sum(values) / len(values)) for cid, values in buckets.items()}
 
 

@@ -17,6 +17,10 @@ from .config import SETTINGS
 
 # A focused budget. The model only writes short, structured language.
 _MAX_TOKENS = 700
+# A short per-call timeout keeps one slow or stuck call from stalling the whole
+# concurrent batch; a single retry rides out a transient blip.
+_REQUEST_TIMEOUT = 45.0
+_RETRIES = 1
 _FENCE = re.compile(r"```(?:json)?\s*(.*?)\s*```", re.DOTALL)
 
 
@@ -67,19 +71,26 @@ def chat_json(
     *,
     example_user: str | None = None,
     example_assistant: str | None = None,
+    examples: list[tuple[str, str]] | None = None,
     max_tokens: int = _MAX_TOKENS,
+    timeout: float = _REQUEST_TIMEOUT,
 ) -> dict[str, Any]:
     """Run one JSON-mode completion and return the parsed object.
 
     Grounding and instructions go in ``system``; untrusted free text goes in
-    ``user``. The optional one-shot example pins the output shape.
+    ``user``. ``examples`` (or the single ``example_user``/``example_assistant``
+    pair) supplies few-shot turns that pin the output shape. Each call carries a
+    per-call ``timeout`` and is retried once on failure.
     """
     client = _get_client()
 
     messages: list[dict[str, str]] = [{"role": "system", "content": system}]
+    shots = list(examples or [])
     if example_user and example_assistant:
-        messages.append({"role": "user", "content": example_user})
-        messages.append({"role": "assistant", "content": example_assistant})
+        shots.append((example_user, example_assistant))
+    for shot_user, shot_assistant in shots:
+        messages.append({"role": "user", "content": shot_user})
+        messages.append({"role": "assistant", "content": shot_assistant})
     messages.append({"role": "user", "content": user})
 
     kwargs: dict[str, Any] = {
@@ -87,19 +98,25 @@ def chat_json(
         "messages": messages,
         "temperature": 0,
         "max_tokens": max_tokens,
+        "timeout": timeout,
     }
 
-    try:
+    last_exc: Exception | None = None
+    for _ in range(_RETRIES + 1):
         try:
-            response = client.chat.completions.create(
-                response_format={"type": "json_object"}, **kwargs
-            )
-        except Exception:
-            # Not every deployment honours response_format; retry plain and parse.
-            response = client.chat.completions.create(**kwargs)
-        content = response.choices[0].message.content or ""
-    except Exception as exc:  # network, auth, rate limit, etc.
-        raise ModelUnavailable(str(exc)) from exc
+            try:
+                response = client.chat.completions.create(
+                    response_format={"type": "json_object"}, **kwargs
+                )
+            except Exception:
+                # Not every deployment honours response_format; retry plain and parse.
+                response = client.chat.completions.create(**kwargs)
+            content = response.choices[0].message.content or ""
+            break
+        except Exception as exc:  # network, auth, rate limit, timeout, etc.
+            last_exc = exc
+    else:
+        raise ModelUnavailable(str(last_exc)) from last_exc
 
     try:
         return _extract_json(content)
