@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "source": "data/seed_corpus/09-role-competency-profiles.md",
   "level_scale": {
     "none": 0,
@@ -9,6 +9,144 @@
   },
   "readiness_threshold": "working",
   "readiness_note": "Readiness for a role is the weighted coverage of its required competencies at the working level or above.",
+  "competency_topics": {
+    "ip_addressing_subnetting": {
+      "query": "IPv4 subnetting VLSM CIDR prefix length subnet design",
+      "source_docs": ["02-ip-addressing-subnetting"]
+    },
+    "switching_vlans": {
+      "query": "VLAN 802.1Q trunking STP spanning tree inter-VLAN routing",
+      "source_docs": ["03-switching-and-vlans"]
+    },
+    "routing": {
+      "query": "routing table static routes OSPF link-state areas convergence",
+      "source_docs": ["04-routing-and-ospf"]
+    },
+    "nat_pat": {
+      "query": "NAT PAT address translation overload static dynamic",
+      "source_docs": ["05-nat-acls-firewalls"]
+    },
+    "acls": {
+      "query": "ACL access control list standard extended permit deny order",
+      "source_docs": ["05-nat-acls-firewalls"]
+    },
+    "network_redundancy": {
+      "query": "first-hop redundancy HSRP VRRP redundant links high availability",
+      "source_docs": ["10-network-design-architecture"]
+    },
+    "traffic_analysis": {
+      "query": "packet capture Wireshark protocol port anomalous traffic",
+      "source_docs": ["01-networking-fundamentals"]
+    },
+    "firewall_policy_segmentation": {
+      "query": "firewall policy zones least privilege network segmentation lateral movement",
+      "source_docs": ["05-nat-acls-firewalls", "08-incident-response-and-defense"]
+    },
+    "defense_in_depth": {
+      "query": "defense in depth layered controls segmentation hardening monitoring",
+      "source_docs": ["08-incident-response-and-defense"]
+    },
+    "vulnerability_assessment": {
+      "query": "vulnerability management CVE CVSS EPSS KEV remediation priority",
+      "source_docs": ["06-vulnerability-management"]
+    },
+    "intrusion_detection_prevention": {
+      "query": "IDS IPS signature anomaly detection inline blocking",
+      "source_docs": ["07-threat-detection-ids-mitre"]
+    },
+    "secure_remote_access": {
+      "query": "site-to-site VPN encrypted remote access SSH hardening Telnet insecure",
+      "source_docs": ["12-cloud-networking", "01-networking-fundamentals"]
+    },
+    "nist_csf": {
+      "query": "NIST Cybersecurity Framework Identify Protect Detect Respond Recover functions",
+      "source_docs": ["08-incident-response-and-defense"]
+    },
+    "log_analysis_siem": {
+      "query": "SIEM log correlation detection rules alert fatigue triage",
+      "source_docs": ["07-threat-detection-ids-mitre"]
+    },
+    "intrusion_detection": {
+      "query": "intrusion detection signature versus anomaly false positives",
+      "source_docs": ["07-threat-detection-ids-mitre"]
+    },
+    "mitre_attack": {
+      "query": "MITRE ATT&CK tactics techniques map finding attack path",
+      "source_docs": ["07-threat-detection-ids-mitre"]
+    },
+    "incident_response_lifecycle": {
+      "query": "incident response NIST lifecycle preparation detection containment recovery",
+      "source_docs": ["08-incident-response-and-defense"]
+    },
+    "threat_intelligence": {
+      "query": "threat intelligence exploited in the wild EPSS KEV exposure context",
+      "source_docs": ["06-vulnerability-management"]
+    },
+    "scripting_for_triage": {
+      "query": "Python scripting automation API calls repeatable tasks",
+      "source_docs": ["11-network-automation"]
+    },
+    "network_design": {
+      "query": "hierarchical three-tier access distribution core spine-leaf scalable design",
+      "source_docs": ["10-network-design-architecture"]
+    },
+    "high_availability": {
+      "query": "high availability redundant links devices no single point of failure HSRP VRRP",
+      "source_docs": ["10-network-design-architecture"]
+    },
+    "capacity_planning": {
+      "query": "capacity planning headroom growth bandwidth technology roadmap",
+      "source_docs": ["10-network-design-architecture"]
+    },
+    "network_automation": {
+      "query": "network automation Python Ansible Netmiko playbooks desired state",
+      "source_docs": ["11-network-automation"]
+    },
+    "infrastructure_as_code": {
+      "query": "infrastructure as code version control Git pull request pipeline test rollback",
+      "source_docs": ["11-network-automation"]
+    },
+    "config_management": {
+      "query": "configuration management Ansible YAML Jinja2 templates single source of truth",
+      "source_docs": ["11-network-automation"]
+    },
+    "cloud_virtual_networks": {
+      "query": "Azure VNet AWS VPC subnets route tables network security groups peering",
+      "source_docs": ["12-cloud-networking"]
+    },
+    "hybrid_connectivity": {
+      "query": "hybrid connectivity site-to-site VPN ExpressRoute Direct Connect non-overlapping",
+      "source_docs": ["12-cloud-networking"]
+    },
+    "cloud_security_controls": {
+      "query": "cloud security groups network ACLs stateful segmentation egress NAT gateway",
+      "source_docs": ["12-cloud-networking"]
+    },
+    "network_monitoring": {
+      "query": "network monitoring SNMP syslog NetFlow baselines thresholds dashboards",
+      "source_docs": ["13-network-monitoring-noc"]
+    },
+    "noc_operations": {
+      "query": "NOC operations runbooks SLA mean time to detect resolve shift handoff",
+      "source_docs": ["13-network-monitoring-noc"]
+    },
+    "alert_triage": {
+      "query": "alert triage severity impact escalation first responder runbook",
+      "source_docs": ["13-network-monitoring-noc"]
+    },
+    "wireless_design": {
+      "query": "Wi-Fi site survey access point placement channel power capacity roaming",
+      "source_docs": ["14-wireless-networking"]
+    },
+    "wireless_security": {
+      "query": "WPA2 WPA3 802.1X RADIUS guest SSID VLAN wireless security",
+      "source_docs": ["14-wireless-networking"]
+    },
+    "rf_fundamentals": {
+      "query": "RF radio frequency 2.4 5 6 GHz bands channels 802.11ax interference",
+      "source_docs": ["14-wireless-networking"]
+    }
+  },
   "roles": [
     {
       "id": "network_engineer",
@@ -63,6 +201,267 @@
           "name": "Traffic analysis",
           "detail": "Wireshark",
           "weight": 0.15,
+          "target_level": "working"
+        }
+      ]
+    },
+    {
+      "id": "network_architect",
+      "name": "Network Architect",
+      "summary": "Designs the big-picture enterprise network for scale, resilience, and growth rather than configuring devices day to day, and justifies the cost, performance, and complexity tradeoffs.",
+      "builds_on": "network_engineer",
+      "foundational_tools": ["design tooling", "IP address management", "Visio"],
+      "competencies": [
+        {
+          "id": "network_design",
+          "name": "Network design and architecture",
+          "detail": "three-tier and spine-leaf",
+          "weight": 0.25,
+          "target_level": "proficient"
+        },
+        {
+          "id": "high_availability",
+          "name": "High availability and redundancy",
+          "detail": "no single point of failure",
+          "weight": 0.2,
+          "target_level": "proficient"
+        },
+        {
+          "id": "capacity_planning",
+          "name": "Capacity planning",
+          "detail": "headroom and growth",
+          "weight": 0.1,
+          "target_level": "working"
+        },
+        {
+          "id": "routing",
+          "name": "Routing",
+          "detail": "static and OSPF",
+          "weight": 0.15,
+          "target_level": "proficient"
+        },
+        {
+          "id": "ip_addressing_subnetting",
+          "name": "IP addressing and subnetting",
+          "detail": "VLSM, CIDR",
+          "weight": 0.1,
+          "target_level": "proficient"
+        },
+        {
+          "id": "switching_vlans",
+          "name": "Switching and VLANs",
+          "detail": "segmentation strategy",
+          "weight": 0.1,
+          "target_level": "working"
+        },
+        {
+          "id": "cloud_virtual_networks",
+          "name": "Cloud virtual networks",
+          "detail": "VNet and VPC design",
+          "weight": 0.1,
+          "target_level": "working"
+        }
+      ]
+    },
+    {
+      "id": "network_automation_engineer",
+      "name": "Network Automation Engineer",
+      "summary": "Replaces repetitive manual configuration with code, managing many devices from a single source of truth using version control and a test step before applying changes.",
+      "builds_on": "network_engineer",
+      "foundational_tools": ["Python", "Ansible", "Git"],
+      "competencies": [
+        {
+          "id": "network_automation",
+          "name": "Network automation",
+          "detail": "Python, Netmiko, Ansible",
+          "weight": 0.3,
+          "target_level": "proficient"
+        },
+        {
+          "id": "infrastructure_as_code",
+          "name": "Infrastructure as code",
+          "detail": "Git, pull requests, pipelines",
+          "weight": 0.2,
+          "target_level": "proficient"
+        },
+        {
+          "id": "config_management",
+          "name": "Configuration management",
+          "detail": "YAML, Jinja2 templates",
+          "weight": 0.2,
+          "target_level": "working"
+        },
+        {
+          "id": "routing",
+          "name": "Routing",
+          "detail": "static and OSPF",
+          "weight": 0.1,
+          "target_level": "working"
+        },
+        {
+          "id": "ip_addressing_subnetting",
+          "name": "IP addressing and subnetting",
+          "detail": "VLSM, CIDR",
+          "weight": 0.1,
+          "target_level": "working"
+        },
+        {
+          "id": "switching_vlans",
+          "name": "Switching and VLANs",
+          "detail": "802.1Q trunking, STP",
+          "weight": 0.1,
+          "target_level": "working"
+        }
+      ]
+    },
+    {
+      "id": "cloud_network_engineer",
+      "name": "Cloud Network Engineer",
+      "summary": "Extends networking into Azure and AWS and connects on-premises sites to the cloud, designing virtual networks, security rules, and private hybrid connectivity.",
+      "builds_on": "network_engineer",
+      "foundational_tools": ["Azure", "AWS", "Terraform"],
+      "competencies": [
+        {
+          "id": "cloud_virtual_networks",
+          "name": "Cloud virtual networks",
+          "detail": "VNet, VPC, subnets, peering",
+          "weight": 0.3,
+          "target_level": "proficient"
+        },
+        {
+          "id": "hybrid_connectivity",
+          "name": "Hybrid connectivity",
+          "detail": "VPN, ExpressRoute, Direct Connect",
+          "weight": 0.2,
+          "target_level": "proficient"
+        },
+        {
+          "id": "cloud_security_controls",
+          "name": "Cloud security controls",
+          "detail": "NSGs, security groups, egress",
+          "weight": 0.15,
+          "target_level": "working"
+        },
+        {
+          "id": "ip_addressing_subnetting",
+          "name": "IP addressing and subnetting",
+          "detail": "non-overlapping address spaces",
+          "weight": 0.15,
+          "target_level": "proficient"
+        },
+        {
+          "id": "routing",
+          "name": "Routing",
+          "detail": "route tables and gateways",
+          "weight": 0.1,
+          "target_level": "working"
+        },
+        {
+          "id": "network_automation",
+          "name": "Network automation",
+          "detail": "infrastructure as code",
+          "weight": 0.1,
+          "target_level": "working"
+        }
+      ]
+    },
+    {
+      "id": "noc_engineer",
+      "name": "NOC Engineer",
+      "summary": "First responder in a network operations center: monitors health, triages alerts by severity, follows runbooks to resolve or escalate, and tracks everything to SLA.",
+      "foundational_tools": ["SNMP", "syslog", "monitoring platforms", "ticketing"],
+      "competencies": [
+        {
+          "id": "network_monitoring",
+          "name": "Network monitoring",
+          "detail": "SNMP, syslog, NetFlow, baselines",
+          "weight": 0.25,
+          "target_level": "proficient"
+        },
+        {
+          "id": "noc_operations",
+          "name": "NOC operations",
+          "detail": "runbooks, SLAs, handoffs",
+          "weight": 0.2,
+          "target_level": "working"
+        },
+        {
+          "id": "alert_triage",
+          "name": "Alert triage",
+          "detail": "severity, impact, escalation",
+          "weight": 0.2,
+          "target_level": "proficient"
+        },
+        {
+          "id": "traffic_analysis",
+          "name": "Traffic analysis",
+          "detail": "Wireshark",
+          "weight": 0.15,
+          "target_level": "working"
+        },
+        {
+          "id": "routing",
+          "name": "Routing",
+          "detail": "reachability troubleshooting",
+          "weight": 0.1,
+          "target_level": "working"
+        },
+        {
+          "id": "incident_response_lifecycle",
+          "name": "Incident response lifecycle",
+          "detail": "detect, contain, recover",
+          "weight": 0.1,
+          "target_level": "working"
+        }
+      ]
+    },
+    {
+      "id": "wireless_network_engineer",
+      "name": "Wireless Network Engineer",
+      "summary": "Designs and optimizes Wi-Fi so coverage, capacity, and roaming work reliably, securing the network with WPA2/WPA3 and 802.1X.",
+      "builds_on": "network_engineer",
+      "foundational_tools": ["wireless controller", "site survey tools", "spectrum analyzer"],
+      "competencies": [
+        {
+          "id": "wireless_design",
+          "name": "Wireless design",
+          "detail": "site survey, AP placement, roaming",
+          "weight": 0.3,
+          "target_level": "proficient"
+        },
+        {
+          "id": "wireless_security",
+          "name": "Wireless security",
+          "detail": "WPA2/WPA3, 802.1X, RADIUS",
+          "weight": 0.2,
+          "target_level": "proficient"
+        },
+        {
+          "id": "rf_fundamentals",
+          "name": "RF fundamentals",
+          "detail": "bands, channels, interference",
+          "weight": 0.2,
+          "target_level": "working"
+        },
+        {
+          "id": "switching_vlans",
+          "name": "Switching and VLANs",
+          "detail": "guest and corporate VLANs",
+          "weight": 0.1,
+          "target_level": "working"
+        },
+        {
+          "id": "ip_addressing_subnetting",
+          "name": "IP addressing and subnetting",
+          "detail": "VLSM, CIDR",
+          "weight": 0.1,
+          "target_level": "working"
+        },
+        {
+          "id": "traffic_analysis",
+          "name": "Traffic analysis",
+          "detail": "Wireshark",
+          "weight": 0.1,
           "target_level": "working"
         }
       ]
