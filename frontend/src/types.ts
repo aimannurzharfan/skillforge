@@ -7,6 +7,18 @@ export interface RoleSummary {
   foundational_tools: string[];
 }
 
+export interface RolesResponse {
+  roles: RoleSummary[];
+  knowledge_backend: string;
+}
+
+/** A human source line for the grounded-knowledge layer. Never fabricated. */
+export function groundingLabel(backend: string | null | undefined): string {
+  if (backend === "foundry_iq") return "Grounded by Foundry IQ";
+  if (backend === "local") return "Grounded by the local corpus";
+  return "";
+}
+
 export type StepMode = "deterministic" | "model" | "code" | "none";
 
 export interface Step {

@@ -1,4 +1,4 @@
-import type { AssessmentStart, ResultData, RoleSummary } from "./types";
+import type { AssessmentStart, ResultData, RolesResponse } from "./types";
 
 async function postJson<T>(url: string, body: unknown): Promise<T> {
   const res = await fetch(url, {
@@ -13,11 +13,10 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export async function fetchRoles(): Promise<RoleSummary[]> {
+export async function fetchRoles(): Promise<RolesResponse> {
   const res = await fetch("/api/roles");
   if (!res.ok) throw new Error("Could not load roles");
-  const data = (await res.json()) as { roles: RoleSummary[] };
-  return data.roles;
+  return (await res.json()) as RolesResponse;
 }
 
 export function startAssessment(roleId: string): Promise<AssessmentStart> {

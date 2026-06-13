@@ -1,25 +1,35 @@
 @import "tailwindcss";
 
-/* SkillForge design tokens. A forge: deep ink panels, an ember-to-amber accent
-   for the hero readiness gauge, steel-cyan for model signals, emerald for met
-   targets. Distinctive without being noisy. */
+/* SkillForge is a forge: deep graphite panels lit by a single ember accent.
+   Color carries meaning, not decoration. Ember marks readiness and primary
+   action, emerald marks a met target, steel marks model-written output. One
+   accent, used with intent. */
 @theme {
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  --font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
 
-  --color-ink-950: #070a11;
-  --color-ink-900: #0b0f17;
+  --color-ink-950: #07090f;
+  --color-ink-900: #0a0d15;
+  --color-ink-850: #0e121c;
   --color-ink-800: #121826;
-  --color-ink-700: #1b2334;
-  --color-ink-600: #2a344a;
-  --color-mist-400: #8a97b1;
-  --color-mist-200: #c5cee0;
+  --color-ink-700: #1c2333;
+  --color-ink-600: #2b3550;
 
+  /* Text ramp. ink-on-dark stays above 4.5:1 for body, higher for headings. */
+  --color-mist-100: #eef1f8;
+  --color-mist-200: #cdd5e6;
+  --color-mist-300: #a7b1c8;
+  --color-mist-400: #8a97b1;
+
+  /* Ember: the single committed accent. */
+  --color-ember-600: #e9610a;
   --color-ember-500: #ff7a18;
   --color-ember-400: #ff9a3d;
   --color-amber-300: #ffc24b;
-  --color-steel-400: #38bdf8;
+
+  /* Reserved semantics. */
+  --color-steel-400: #5ab0e0;
   --color-emerald-400: #34d399;
 }
 
@@ -36,30 +46,41 @@ body,
 body {
   margin: 0;
   background:
-    radial-gradient(1100px 600px at 80% -10%, rgba(255, 122, 24, 0.12), transparent 60%),
-    radial-gradient(900px 500px at 0% 0%, rgba(56, 189, 248, 0.08), transparent 55%),
+    radial-gradient(900px 540px at 88% -8%, rgba(255, 122, 24, 0.13), transparent 62%),
     var(--color-ink-900);
   color: var(--color-mist-200);
   font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv01";
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Accessible, visible focus ring for keyboard users on every interactive element. */
+/* Visible focus ring for keyboard users on every interactive element. */
 :where(a, button, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--color-amber-300);
   outline-offset: 2px;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
-.kicker {
+/* Mono labels read as instrument readouts, not decoration. Used sparingly. */
+.label {
   font-family: var(--font-mono);
   text-transform: uppercase;
-  letter-spacing: 0.22em;
-  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  font-size: 0.68rem;
+  font-weight: 500;
 }
 
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The one surface treatment. A panel is a single graphite plane with a hairline
+   edge and a faint top sheen. No nesting, no stripes. */
 .panel {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent), var(--color-ink-800);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 120px),
+    var(--color-ink-850);
   border: 1px solid var(--color-ink-700);
 }
 

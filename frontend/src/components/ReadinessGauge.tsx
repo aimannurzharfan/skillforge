@@ -40,8 +40,10 @@ export default function ReadinessGauge({ percent, threshold }: Props) {
   const offset = arcLength * (1 - shown / 100);
   const rotation = 135; // start angle so the gap sits at the bottom
 
+  const ready = shown >= 80;
   const band =
     shown >= 80 ? "Role ready" : shown >= 55 ? "Approaching ready" : shown >= 30 ? "Developing" : "Early";
+  const bandColor = ready ? "text-emerald-400" : "text-amber-300";
 
   return (
     <div className="flex flex-col items-center">
@@ -81,15 +83,27 @@ export default function ReadinessGauge({ percent, threshold }: Props) {
           strokeDashoffset={offset}
           transform={`rotate(${rotation} ${cx} ${cy})`}
         />
-        <text x={cx} y={cy - 4} textAnchor="middle" className="fill-mist-200" style={{ fontSize: 56, fontWeight: 700, fontFamily: "var(--font-display)" }}>
+        <text
+          x={cx}
+          y={cy - 2}
+          textAnchor="middle"
+          className="fill-mist-100"
+          style={{ fontSize: 62, fontWeight: 600, fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" }}
+        >
           {shown}
         </text>
-        <text x={cx} y={cy + 26} textAnchor="middle" className="fill-mist-400" style={{ fontSize: 14, fontFamily: "var(--font-mono)" }}>
-          % READY
+        <text
+          x={cx}
+          y={cy + 28}
+          textAnchor="middle"
+          className="fill-mist-400"
+          style={{ fontSize: 12, letterSpacing: "0.18em", fontFamily: "var(--font-mono)" }}
+        >
+          PERCENT READY
         </text>
       </svg>
-      <p className="mt-1 font-display text-lg font-semibold text-amber-300">{band}</p>
-      <p className="text-sm text-mist-400">
+      <p className={`mt-1 text-lg font-bold tracking-tight ${bandColor}`}>{band}</p>
+      <p className="mt-0.5 text-sm text-mist-400">
         Weighted coverage at the <span className="font-mono text-mist-200">{threshold}</span> bar
       </p>
     </div>

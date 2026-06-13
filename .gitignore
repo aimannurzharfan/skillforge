@@ -25,6 +25,10 @@ web/static/
 .claude/
 CLAUDE.md
 
+# Impeccable (design tooling: local config and design notes)
+.impeccable/
+PRODUCT.md
+
 # Local scratch
 _local/
 
