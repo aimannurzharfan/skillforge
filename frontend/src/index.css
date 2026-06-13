@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+/* SkillForge design tokens. A forge: deep ink panels, an ember-to-amber accent
+   for the hero readiness gauge, steel-cyan for model signals, emerald for met
+   targets. Distinctive without being noisy. */
+@theme {
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --color-ink-950: #070a11;
+  --color-ink-900: #0b0f17;
+  --color-ink-800: #121826;
+  --color-ink-700: #1b2334;
+  --color-ink-600: #2a344a;
+  --color-mist-400: #8a97b1;
+  --color-mist-200: #c5cee0;
+
+  --color-ember-500: #ff7a18;
+  --color-ember-400: #ff9a3d;
+  --color-amber-300: #ffc24b;
+  --color-steel-400: #38bdf8;
+  --color-emerald-400: #34d399;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1100px 600px at 80% -10%, rgba(255, 122, 24, 0.12), transparent 60%),
+    radial-gradient(900px 500px at 0% 0%, rgba(56, 189, 248, 0.08), transparent 55%),
+    var(--color-ink-900);
+  color: var(--color-mist-200);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Accessible, visible focus ring for keyboard users on every interactive element. */
+:where(a, button, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-amber-300);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.7rem;
+}
+
+.panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent), var(--color-ink-800);
+  border: 1px solid var(--color-ink-700);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
