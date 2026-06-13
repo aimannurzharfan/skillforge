@@ -28,6 +28,19 @@ export default function Result({ data, onRestart }: { data: ResultData; onRestar
           <ReadinessGauge percent={data.readiness_percent} threshold={data.threshold} />
           <div>
             <Label className="text-ember-400">Readiness for {data.role_name}</Label>
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[0.7rem] text-mist-400 tnum">
+              <span title="Measured wall-clock time from submit to readiness and plan">
+                Assessed and planned in{" "}
+                <span className="text-mist-200">{data.elapsed_seconds.toFixed(1)}s</span>
+              </span>
+              <span aria-hidden="true" className="h-1 w-1 rounded-full bg-ink-600" />
+              <span title="Safety gates passed this run: schema, non-answer rule, grounded citations, taxonomy">
+                Guardrails{" "}
+                <span className={data.guardrails.passed === data.guardrails.total ? "text-emerald-400" : "text-amber-300"}>
+                  {data.guardrails.passed}/{data.guardrails.total}
+                </span>
+              </span>
+            </div>
             <p id="readiness-h" className="mt-3 text-xl leading-relaxed text-mist-100 text-pretty">
               {data.narrative}
             </p>

@@ -93,6 +93,17 @@ export interface NextStep {
   action: string;
 }
 
+export interface GuardrailCheck {
+  name: string;
+  ok: boolean;
+}
+
+export interface GuardrailReport {
+  passed: number;
+  total: number;
+  checks: GuardrailCheck[];
+}
+
 export interface ResultData {
   role_id: string;
   role_name: string;
@@ -107,5 +118,7 @@ export interface ResultData {
   learning_plans: LearningPlan[];
   knowledge_backend: string;
   model_configured: boolean;
+  guardrails: GuardrailReport;
+  elapsed_seconds: number;
   steps: Step[];
 }
