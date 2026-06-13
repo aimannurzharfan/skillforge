@@ -1,0 +1,20 @@
+SkillForge
+Copyright (c) 2026 Aiman Nurzharfan
+
+This software is licensed under the MIT License. See the LICENSE file for the
+full terms.
+
+Disclaimer
+----------
+SkillForge is an educational hackathon project, provided as is and without
+warranty of any kind. It is not a hiring, promotion, or certification tool. The
+role competency profiles and the seed corpus are illustrative and cover only a
+sample of network, cloud, and security roles. Readiness scores are intended as a
+learning aid, not as a qualification of record.
+
+Third-party services
+---------------------
+When configured, SkillForge calls Microsoft Foundry (the Phi-4-mini-instruct
+model endpoint) and Foundry IQ (Azure AI Search). Use of those services is
+subject to their own terms. Credentials are read from a local .env file, which
+is gitignored and must never be committed.
