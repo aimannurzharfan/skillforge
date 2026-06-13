@@ -1,0 +1,60 @@
+flowchart TB
+    user([Employee])
+
+    subgraph app["SkillForge application (local / container)"]
+        direction TB
+        api["Flask API + React SPA<br/>/api, /health"]
+        orch["Orchestrator<br/>logs every step"]
+
+        subgraph agents["Multi-agent pipeline"]
+            direction TB
+            rp["Role Profiler<br/>(deterministic)"]
+            as["Assessor<br/>(model)"]
+            ga["Gap Analyzer<br/>(code gaps + model narrative)"]
+            lp["Learning Planner<br/>(model + grounding)"]
+            rt["Readiness Tracker<br/>(deterministic)"]
+        end
+
+        subgraph core["Deterministic core (authoritative)"]
+            direction TB
+            roles[("roles.json<br/>competency profiles")]
+            math["readiness math · scoring<br/>aggregation · gap computation"]
+            schema["JSON schema validators"]
+        end
+
+        subgraph know["Knowledge layer (one interface)"]
+            direction TB
+            iface["retrieve(query, k)"]
+            localb["local backend<br/>seed corpus"]
+            iqb["foundry_iq backend<br/>extractive retrieve"]
+        end
+    end
+
+    subgraph foundry["Microsoft Foundry"]
+        phi["Phi-4-mini-instruct<br/>OpenAI-compatible endpoint"]
+    end
+
+    subgraph iq["Foundry IQ"]
+        kb["Knowledge base<br/>skillforge-network<br/>(Azure AI Search)"]
+    end
+
+    user <--> api
+    api --> orch
+    orch --> rp & as & ga & lp & rt
+    rp --> roles
+    rt --> math
+    ga --> math
+    as -. validated by .-> schema
+    lp -. validated by .-> schema
+
+    as --> phi
+    ga --> phi
+    lp --> phi
+
+    lp --> iface
+    as --> iface
+    iface --> localb
+    iface --> iqb
+    localb --> roles
+    iqb -->|"retrieve action<br/>api-version 2026-04-01"| kb
+    iqb -. fallback on error .-> localb
