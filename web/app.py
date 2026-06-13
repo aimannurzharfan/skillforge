@@ -49,7 +49,9 @@ def create_app() -> Flask:
 
     @app.get("/api/roles")
     def roles():
-        return jsonify({"roles": list_roles(catalog)})
+        return jsonify(
+            {"roles": list_roles(catalog), "knowledge_backend": orchestrator.backend.name}
+        )
 
     @app.post("/api/assessment")
     def assessment():
