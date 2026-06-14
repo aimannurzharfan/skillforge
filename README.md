@@ -176,7 +176,7 @@ served from the local corpus.
 
 ![SkillForge readiness result](docs/screenshot.png)
 
-Demo video: <link>
+[![Demo Video](https://img.shields.io/badge/Demo-Video-red?logo=youtube)](https://www.youtube.com/watch?v=Z6avQxRn-Sg)
 
 ## Deployment
 
